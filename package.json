@@ -1,0 +1,27 @@
+{
+  "name": "dbot_customquizz_js",
+  "version": "1.0.0",
+  "description": "a discordjs bot which play a quizz by you for you",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fongkhan/dbot_customquizz_js.git"
+  },
+  "keywords": [
+    "discordjs",
+    "discord",
+    "bot"
+  ],
+  "author": "fongkhan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fongkhan/dbot_customquizz_js/issues"
+  },
+  "homepage": "https://github.com/fongkhan/dbot_customquizz_js#readme",
+  "dependencies": {
+    "discord.js": "^14.12.1"
+  }
+}

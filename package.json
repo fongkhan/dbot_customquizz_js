@@ -23,8 +23,8 @@
   "homepage": "https://github.com/fongkhan/dbot_customquizz_js#readme",
   "dependencies": {
     "axios": "^1.4.0",
-    "dataframe-js": "^1.4.4",
     "discord.js": "^14.12.1",
-    "he": "^1.2.0"
+    "he": "^1.2.0",
+    "papaparse": "^5.4.1"
   }
 }

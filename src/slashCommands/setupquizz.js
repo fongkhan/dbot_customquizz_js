@@ -3,8 +3,8 @@ const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 // import he module to decode file
 const he = require('he');
-// import dataframe js to read csv file
-const DataFrame = require('dataframe-js').DataFrame;
+// import papaparse to read csv file
+const Papa = require('papaparse');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -22,31 +22,31 @@ module.exports = {
 		// get the url of the csv file then download it
 		const csvUrl = encodeURI(interaction.options.getAttachment('csv').url);
 		const csvName = interaction.options.getString('name');
-		// download the csv filewith axios then console log the result
+
 		console.log(csvUrl);
-		const csvFile = await axios.get(csvUrl);
-		console.log(he.decode(csvFile.data));
-		// create a dataframe with the csv file
 		try {
-			const df = new DataFrame(he.decode(csvFile.data));
-			console.log(df);
-			//DataFrame.fromCSV(csvFile.data).then(df => {
-			//	// print the first 5 rows of the dataframe
-			//	console.log(df);
-			//	//return interaction.reply(df.toString().slice(0, 2000), { ephemeral: true });
-			//}).catch(err => {
-			//	console.error(err);
-			//	//interaction.reply({content: 'Il y a eu une erreur lors de la création du dataframe.', ephemeral: true});
-			//});
+			// download the csv file with axios then console log the result
+			const response = await axios.get(csvUrl, { responseType: 'text' });
+			// lire le fichier csv avec papaparse
+			const csvData = response.data;
+			let csvText = '';
+			const parsedData = Papa.parse(csvData, {
+				header: true, // Indique que la première ligne contient les noms de colonnes
+   		       skipEmptyLines: true, // Ignorer les lignes vides
+			   step: (row) => {
+				   csvText += row.data + '\n';
+			   }
+			});
+
+			console.log(parsedData);
+			await interaction.reply({content: csvText, ephemeral: true});
+        	// Utilisez le DataFrame pour effectuer des opérations sur les données CSV
 		}
 		catch (error) {
 			console.error(error);
 			//interaction.reply({content: 'Il y a eu une erreur lors de la création du dataframe.', ephemeral: true});
 		}
-		// print the dataframe
-		//console.log(df.toString());
 		console.log("done");
-		// dataframe it with pandas
-		await interaction.reply({content: 'done', ephemeral: true});
+		//await interaction.reply({content: 'done', ephemeral: true});
 	},
 };

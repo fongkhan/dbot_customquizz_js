@@ -22,7 +22,6 @@ module.exports = {
 		// get the url of the csv file then download it
 		const csvUrl = encodeURI(interaction.options.getAttachment('csv').url);
 		const csvName = interaction.options.getString('name');
-
 		console.log(csvUrl);
 		try {
 			// download the csv file with axios then console log the result
@@ -30,12 +29,15 @@ module.exports = {
 			// lire le fichier csv avec papaparse
 			const csvData = response.data;
 			let csvText = '';
-			const parsedData = Papa.parse(csvData, {
+			const parsedData = Papa.parse(csvUrl, {
+				download: true,
 				header: true, // Indique que la première ligne contient les noms de colonnes
-   		       skipEmptyLines: true, // Ignorer les lignes vides
-			   step: (row) => {
+				dynamicTyping: true, // Convertir les nombres en nombres, etc.
+   		    	skipEmptyLines: true, // Ignorer les lignes vides
+				step: (row) => {
 				   csvText += row.data + '\n';
-			   }
+				   console.log(row.data);
+				}
 			});
 
 			console.log(parsedData);

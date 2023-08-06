@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-//import functions from './../utils/functions.js';
 const { getQuizzCsvFile } = require('./../utils/functions.js');
 const { quizz } = require('./../utils/variables.js');
 

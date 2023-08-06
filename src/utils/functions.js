@@ -10,7 +10,7 @@ const { Table } = require('embed-table');
 
 // export the functions to be used in the commands
 module.exports = {
-	changeActivity, refreshCommands, getRole, getChannel, getQuizzCsvFile,
+	changeActivity, refreshCommands, getRole, getChannel, getQuizzCsvFile, showQuizz,
 };
 
 // change the activity of the bot (playing, listening, watching, streaming) only for admins of the server
@@ -154,15 +154,8 @@ function parseCsvFile(csvData) {
 }
 
 // show the quizz as text
-function showQuizz(interaction) {
-	// create the table
-	const table = new Table();
-	// add the header
-	table.addHeader('Question', 'Answer');
-	// add the rows
-	for (let i = 0; i < quizz.table.data.length; i++) {
-		table.addRow(quizz.table.data[i].question, quizz.table.data[i].answer);
-	}
-	// send the table
-	interaction.followUp({content: table.toString(), ephemeral: true});
+async function showQuizz(interaction) {
+	quizzdata = Papa.unparse(quizz.table.data);
+	await interaction.followUp({content: quizzdata, ephemeral: true});
+	return true;
 }

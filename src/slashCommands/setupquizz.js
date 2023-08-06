@@ -1,10 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-//import axios
-const axios = require('axios');
-// import he module to decode file
-const he = require('he');
-// import papaparse to read csv file
-const Papa = require('papaparse');
+//import functions from './../utils/functions.js';
+const { getCsvFile } = require('./../utils/functions.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -19,36 +15,16 @@ module.exports = {
 				.setDescription('the name of the quizz')
 				.setRequired(true)),
 	async execute(interaction) {
+		await interaction.deferReply({ ephemeral: true });
 		// get the url of the csv file then download it
 		const csvUrl = encodeURI(interaction.options.getAttachment('csv').url);
 		const csvName = interaction.options.getString('name');
-		console.log(csvUrl);
+		getCsvFile(csvUrl);
 		try {
-			// download the csv file with axios then console log the result
-			const response = await axios.get(csvUrl, { responseType: 'text' });
-			// lire le fichier csv avec papaparse
-			const csvData = response.data;
-			let csvText = '';
-			const parsedData = Papa.parse(csvUrl, {
-				download: true,
-				header: true, // Indique que la première ligne contient les noms de colonnes
-				dynamicTyping: true, // Convertir les nombres en nombres, etc.
-   		    	skipEmptyLines: true, // Ignorer les lignes vides
-				step: (row) => {
-				   csvText += row.data + '\n';
-				   console.log(row.data);
-				}
-			});
-
-			console.log(parsedData);
-			await interaction.reply({content: csvText, ephemeral: true});
-        	// Utilisez le DataFrame pour effectuer des opérations sur les données CSV
-		}
-		catch (error) {
+			await interaction.followUp({content: 'done', ephemeral: true});
+		} catch (error) {
 			console.error(error);
-			//interaction.reply({content: 'Il y a eu une erreur lors de la création du dataframe.', ephemeral: true});
+			await interaction.followUp({content: 'There was an error while executing this command!', ephemeral: true});
 		}
-		console.log("done");
-		//await interaction.reply({content: 'done', ephemeral: true});
 	},
 };

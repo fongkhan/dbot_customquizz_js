@@ -4,10 +4,13 @@ const { REST, Routes, ActivityType } = require('discord.js');
 const { clientId, token } = require('./../config.json');
 const fs = require('node:fs');
 const path = require('node:path');
+const axios = require('axios');
+const Papa = require('papaparse');
+const { Table } = require('embed-table');
 
 // export the functions to be used in the commands
 module.exports = {
-	changeActivity, refreshCommands,
+	changeActivity, refreshCommands, getRole, getChannel, getCsvFile,
 };
 
 // change the activity of the bot (playing, listening, watching, streaming) only for admins of the server
@@ -88,4 +91,38 @@ function refreshCommands() {
 			console.error(error);
 		}
 	})();
+}
+
+
+// function to get the role of the user
+function getRole(interaction, roleName) {
+	const role = interaction.guild.roles.cache.find(role => role.name === roleName);
+	return role;
+}
+
+//function to get the channel of the user
+function getChannel(interaction, channelName) {
+	const channel = interaction.guild.channels.cache.find(channel => channel.name === channelName);
+	return channel;
+}
+
+// function to retrieve the csv file from the url
+async function getCsvFile(csvUrl) {
+	try {
+		// download the csv file with axios then console log the result
+		const response = await axios.get(csvUrl, {responseType: 'text'});
+		// read the csv file with papaparse
+		const csvData = response.data;
+		const parsedData = Papa.parse(csvData, {
+			header: true, // indicate that the first line contains the column names
+			dynamicTyping: true, // convert the string to number, etc.
+   			skipEmptyLines: true, // ignore empty lines
+		});
+		console.log("Data parsed");
+		return parsedData;
+	}
+	catch (error) {
+		console.error(error);
+		interaction.followUp({content: 'Il y a eu une erreur lors de la création du dataframe.', ephemeral: true});
+	}
 }

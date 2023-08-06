@@ -1,5 +1,5 @@
 // require all the modules needed
-const variables = require('./variables.js');
+const { quizz } = require('./variables.js');
 const { REST, Routes, ActivityType } = require('discord.js');
 const { clientId, token } = require('./../config.json');
 const fs = require('node:fs');
@@ -10,7 +10,7 @@ const { Table } = require('embed-table');
 
 // export the functions to be used in the commands
 module.exports = {
-	changeActivity, refreshCommands, getRole, getChannel, getCsvFile,
+	changeActivity, refreshCommands, getRole, getChannel, getQuizzCsvFile,
 };
 
 // change the activity of the bot (playing, listening, watching, streaming) only for admins of the server
@@ -106,6 +106,20 @@ function getChannel(interaction, channelName) {
 	return channel;
 }
 
+// function that call the function to get the csv file and parse it for the quizz
+async function getQuizzCsvFile(csvUrl, quizzName) {
+	// get the csv file
+	const csvData = await getCsvFile(csvUrl);
+	// parse the csv file
+	const parsedData = parseCsvFile(csvData);
+	// set the name of the quizz
+	quizz.name = quizzName;
+	// set the table of the quizz
+	quizz.table = parsedData;
+	// return the quizz
+	return true;
+}
+
 // function to retrieve the csv file from the url
 async function getCsvFile(csvUrl) {
 	try {
@@ -113,6 +127,19 @@ async function getCsvFile(csvUrl) {
 		const response = await axios.get(csvUrl, {responseType: 'text'});
 		// read the csv file with papaparse
 		const csvData = response.data;
+		console.log("Data received");
+		return csvData;
+	}
+	catch (error) {
+		console.error(error);
+		interaction.followUp({content: 'Il y a eu une erreur lors de la gestion du tableau', ephemeral: true});
+	}
+}
+
+// function to parse the csv file
+function parseCsvFile(csvData) {
+	try{
+		// parse the csv file with papaparse
 		const parsedData = Papa.parse(csvData, {
 			header: true, // indicate that the first line contains the column names
 			dynamicTyping: true, // convert the string to number, etc.
@@ -120,9 +147,22 @@ async function getCsvFile(csvUrl) {
 		});
 		console.log("Data parsed");
 		return parsedData;
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(error);
-		interaction.followUp({content: 'Il y a eu une erreur lors de la création du dataframe.', ephemeral: true});
+		interaction.followUp({content: 'Il y a eu une erreur lors de la gestion du tableau', ephemeral: true});
 	}
+}
+
+// show the quizz as text
+function showQuizz(interaction) {
+	// create the table
+	const table = new Table();
+	// add the header
+	table.addHeader('Question', 'Answer');
+	// add the rows
+	for (let i = 0; i < quizz.table.data.length; i++) {
+		table.addRow(quizz.table.data[i].question, quizz.table.data[i].answer);
+	}
+	// send the table
+	interaction.followUp({content: table.toString(), ephemeral: true});
 }

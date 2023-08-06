@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 //import functions from './../utils/functions.js';
-const { getCsvFile } = require('./../utils/functions.js');
+const { getQuizzCsvFile } = require('./../utils/functions.js');
+const { quizz } = require('./../utils/variables.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,11 +18,16 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		// get the url of the csv file then download it
+		let flag = false;
 		const csvUrl = encodeURI(interaction.options.getAttachment('csv').url);
-		const csvName = interaction.options.getString('name');
-		getCsvFile(csvUrl);
+		const quizzName = interaction.options.getString('name');
+		flag = await getQuizzCsvFile(csvUrl, quizzName);
+		if (flag === false) {
+			await interaction.followUp({content: 'There was an error while executing this command!', ephemeral: true});
+			return;
+		}
 		try {
-			await interaction.followUp({content: 'done', ephemeral: true});
+			await interaction.followUp({content: `Quizz ${quizzName} created !`, ephemeral: true});
 		} catch (error) {
 			console.error(error);
 			await interaction.followUp({content: 'There was an error while executing this command!', ephemeral: true});

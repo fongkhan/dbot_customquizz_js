@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./src/config.json');
-const functions = require('./src/utils/functions.js');
+const { deco } = require('./src/utils/functions.js');
 const variables = require('./src/utils/variables.js');
 
 // Create a new client instance
@@ -85,13 +85,7 @@ client.login(token);
 setInterval(() => {
 	if (variables.lastActivityTimestamp.value) {
 		if (Date.now() - variables.lastActivityTimestamp.value > variables.lastActivityTimestamp.interval) {
-			functions.deco(null, variables.audioPlayer.connection.joinConfig.channelId);
+			deco(null, variables.audioPlayer.connection.joinConfig.channelId);
 		}
 	}
 }, variables.lastActivityTimestamp.interval);
-
-// set interval of 1 minute to check if a stream on twitch is online and send a message if it is the case
-// ex : fongkhan is live ! https://www.twitch.tv/fongkhan
-setInterval(() => {
-//	functions.checkTwitchStreamers();
-}, 60000);

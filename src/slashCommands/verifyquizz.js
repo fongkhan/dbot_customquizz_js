@@ -18,7 +18,7 @@ module.exports = {
           return;
         }
 		try {
-			//await interaction.followUp({content: `Quizz ${quizz.name} showed !`, ephemeral: true});
+			await interaction.followUp({content: `Quizz ${quizz.name} verified !`, ephemeral: true});
 		} catch (error) {
 			console.error(error);
 			await interaction.followUp({content: 'There was an error while executing this command!', ephemeral: true});

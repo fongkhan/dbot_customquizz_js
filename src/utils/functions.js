@@ -10,7 +10,7 @@ const { Table } = require('embed-table');
 
 // export the functions to be used in the commands
 module.exports = {
-	changeActivity, refreshCommands, getRole, getChannel, getQuizzCsvFile, showQuizz,
+	changeActivity, refreshCommands, getRole, getChannel, getQuizzCsvFile, showQuizz, verifyQuizz,
 };
 
 // change the activity of the bot (playing, listening, watching, streaming) only for admins of the server
@@ -158,4 +158,33 @@ async function showQuizz(interaction) {
 	quizzdata = Papa.unparse(quizz.table.data);
 	await interaction.followUp({content: quizzdata, ephemeral: true});
 	return true;
+}
+
+// verify if the quizz is correct in fields of the papa parse object with header true
+function verifyQuizz(quizz) {
+	// verify if the quizz is not empty
+	if (quizz === undefined || quizz === null || quizz === '') {
+		return false;
+	}
+	// verify if the quizz has all correct fields in meta
+	if (quizz.meta.fields.length !== 8) {
+		return false;
+	}
+	// verify all column names of the quizz are correct and in the correct order in the meta fields
+	if (quizz.meta.fields[0] !== 'category / theme' 
+	|| quizz.meta.fields[1] !== 'Difficulty' 
+	|| quizz.meta.fields[2] !== 'Points' 
+	|| quizz.meta.fields[3] !== 'Question' 
+	|| quizz.meta.fields[4] !== 'Answers' 
+	|| quizz.meta.fields[5] !== 'Good Answer' 
+	|| quizz.meta.fields[6] !== 'Video link' 
+	|| quizz.meta.fields[7] !== 'Image link') {
+		return false;
+	}
+	// verify if the quizz has all correct fields in data
+	for (const question of quizz.data) {
+		if (Object.keys(question).length !== 8) {
+			return false;
+		}
+	}
 }

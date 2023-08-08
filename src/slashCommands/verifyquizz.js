@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { showQuizz } = require('../utils/functions.js');
+const { verifyQuizz } = require('../utils/functions.js');
 const { quizz } = require('../utils/variables.js');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		let flag = false;
-		flag = await showQuizz(interaction);
+		flag = await verifyQuizz(quizz.table);
         if (flag === false) {
           await interaction.followUp({
             content: "There was an error while executing this command!",

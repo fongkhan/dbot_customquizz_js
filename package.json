@@ -27,6 +27,7 @@
     "embed-table": "^4.2.3",
     "he": "^1.2.0",
     "js-levenshtein": "^1.1.6",
-    "papaparse": "^5.4.1"
+    "papaparse": "^5.4.1",
+    "youtube-mp3-downloader": "^0.7.11"
   }
 }

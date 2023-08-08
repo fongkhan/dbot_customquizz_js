@@ -1,3 +1,5 @@
+const { table_example } = require("./example");
+
 const lastActivityTimestamp = {
   _lastact: null,
   _interval: 1800000,
@@ -28,7 +30,7 @@ const command_names = {
 // set getter and setter of a table for the quizz
 const quizz = {
 	_name: null,
-	_table: null,
+	_table: table_example,
 	get name() {
 		return this._name;
 	},

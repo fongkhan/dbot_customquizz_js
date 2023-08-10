@@ -29,7 +29,7 @@ const command_names = {
 
 // set getter and setter of a table for the quizz
 const quizz = {
-	_name: null,
+	_name: "test",
 	_table: table_example,
 	get name() {
 		return this._name;

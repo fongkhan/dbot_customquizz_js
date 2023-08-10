@@ -9,7 +9,7 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		let flag = false;
-		flag = await verifyQuizz(quizz.table);
+		flag = await verifyQuizz(interaction, quizz.table);
         if (flag === false) {
           await interaction.followUp({
             content: "There was an error while executing this command!",

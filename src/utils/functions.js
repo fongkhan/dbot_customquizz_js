@@ -191,6 +191,10 @@ async function verifyQuizz(interaction, quizz) {
   // verify if the quizz has all correct fields in meta
   if (quizz.meta.fields.length !== 8) {
     console.log("Quizz not verified: fields not correct");
+    await interaction.followUp({
+      content: `Quizz ${quizz.name} not verified: fields not correct`,
+      ephemeral: true,
+    });
     return false;
   }
   // verify all column names of the quizz are correct and in the correct order in the meta fields
@@ -205,12 +209,20 @@ async function verifyQuizz(interaction, quizz) {
     quizz.meta.fields[7] !== "Image link"
   ) {
     console.log("Quizz not verified: column names not correct");
+    await interaction.followUp({
+      content: `Quizz ${quizz.name} not verified: column names not correct`,
+      ephemeral: true,
+    });
     return false;
   }
   // verify if the quizz has all correct fields in data
   for (const question of quizz.data) {
     if (Object.keys(question).length !== 8) {
       console.log("Quizz not verified: question not filed correctly");
+      await interaction.followUp({
+        content: `Quizz ${quizz.name} not verified: question not filed correctly`,
+        ephemeral: true,
+      });
       return false;
     }
   }

@@ -17,6 +17,7 @@ module.exports = {
   getQuizzCsvFile,
   showQuizz,
   verifyQuizz,
+  startQuizz,
 };
 
 // change the activity of the bot (playing, listening, watching, streaming) only for admins of the server
@@ -227,4 +228,44 @@ async function verifyQuizz(interaction, quizz) {
     }
   }
   console.log("Quizz verified");
+}
+
+// function to start the quizz
+async function startQuizz(interaction) {
+  // get the quizz
+  const quizz = getQuizz();
+  // verify if the quizz is correct
+  const flag = await verifyQuizz(interaction, quizz);
+  if (flag === false) {
+    await interaction.followUp({
+      content: `Quizz ${quizz.name} not verified`,
+      ephemeral: true,
+    });
+    return;
+  }
+  // get the first question
+  const question = getQuestion(quizz);
+  // show the question
+  await interaction.followUp({ content: question, ephemeral: true });
+  return;
+}
+
+// function to get the question of the quizz
+function getQuestion(quizz) {
+	  // get the question
+  const question = quizz.data[0].Question;
+  // get the answers
+  const answers = quizz.data[0].Answers;
+  // get the good answer
+  const goodAnswer = quizz.data[0].GoodAnswer;
+  // get the video link
+  const videoLink = quizz.data[0].VideoLink;
+  // get the image link
+  const imageLink = quizz.data[0].ImageLink;
+  // create the table
+  const table = new Table()
+	.setHeading("Question", "Answers", "Good Answer", "Video Link", "Image Link")
+	.addRow(question, answers, goodAnswer, videoLink, imageLink);
+  // return the table
+  return table;
 }
